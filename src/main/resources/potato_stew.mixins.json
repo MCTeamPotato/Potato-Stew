@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.teampotato.potatostew.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "potato_stew.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "ScreenMixin",
+    "continuebutton.TitleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
