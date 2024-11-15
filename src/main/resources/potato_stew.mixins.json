@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "potato_stew.refmap.json",
   "mixins": [
+    "helpfulhitboxes.ChainBlockMixin",
+    "helpfulhitboxes.CrossCollisionBlockMixin"
   ],
   "client": [
     "ScreenMixin",

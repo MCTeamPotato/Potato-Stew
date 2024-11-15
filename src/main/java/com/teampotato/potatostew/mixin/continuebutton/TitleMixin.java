@@ -1,6 +1,6 @@
 package com.teampotato.potatostew.mixin.continuebutton;
 
-import com.teampotato.potatostew.config.ModConfig;
+import com.teampotato.potatostew.config.ModConfigClient;
 import com.teampotato.potatostew.impl.ScreenExtensions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+// https://github.com/IMB11/continue-button/blob/1.20/src/main/java/com/mineblock11/continuebutton/mixin/MixinTitleScreen.java
 @Mixin(TitleScreen.class)
 public class TitleMixin extends Screen {
     private final ServerStatusPinger serverListPinger = new ServerStatusPinger();
@@ -37,14 +38,14 @@ public class TitleMixin extends Screen {
     @Inject(at = @At("HEAD"), method = "createNormalMenuOptions(II)V")
     public void drawMenuButton(int y, int spacingY, CallbackInfo info) {
         Button.Builder continueButtonBuilder = Button.builder(Component.translatable("button.potato_stew.continue"), button -> {
-            if (ModConfig.LASTLOCAL.get()) {
-                if (!ModConfig.SERVERNAME.get().isBlank()) {
-                        QuickPlay.joinSingleplayerWorld(minecraft, ModConfig.SERVERADDRESS.get());
+            if (ModConfigClient.LASTLOCAL.get()) {
+                if (!ModConfigClient.SERVERNAME.get().isBlank()) {
+                        QuickPlay.joinSingleplayerWorld(minecraft, ModConfigClient.SERVERADDRESS.get());
                 } else {
                     CreateWorldScreen.openFresh(minecraft, this);
                 }
             } else {
-                QuickPlay.joinMultiplayerWorld(minecraft, ModConfig.SERVERADDRESS.get());
+                QuickPlay.joinMultiplayerWorld(minecraft, ModConfigClient.SERVERADDRESS.get());
             }
         });
         continueButtonBuilder.bounds(this.width / 2 - 100, y, 98, 20);
@@ -70,9 +71,9 @@ public class TitleMixin extends Screen {
 
     private void atFirstRender() {
         new Thread(() -> {
-            if (!ModConfig.LASTLOCAL.get()) {
+            if (!ModConfigClient.LASTLOCAL.get()) {
                 //serverInfo = new ServerData(ModConfig.SERVERNAME.get(), ModConfig.SERVERADDRESS.get(), ServerInfo.ServerType.OTHER);
-                serverInfo = new ServerData(ModConfig.SERVERNAME.get(), ModConfig.SERVERADDRESS.get(), true);
+                serverInfo = new ServerData(ModConfigClient.SERVERNAME.get(), ModConfigClient.SERVERADDRESS.get(), true);
                 serverInfo.motd = Component.translatable("multiplayer.status.pinging");
                 try {
                     serverListPinger.pingServer(serverInfo, () -> {
@@ -96,15 +97,15 @@ public class TitleMixin extends Screen {
     @Inject(at = @At("TAIL"), method = "render")
     public void renderAtTail(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (continueButtonWidget.isHovered() && this.readyToShow) {
-            if (ModConfig.LASTLOCAL.get()) {
-                if (ModConfig.SERVERADDRESS.get().isEmpty()) {
+            if (ModConfigClient.LASTLOCAL.get()) {
+                if (ModConfigClient.SERVERADDRESS.get().isEmpty()) {
                     List<FormattedCharSequence> list = new ArrayList<>();
                     list.add(Component.translatable("selectWorld.create").withStyle(ChatFormatting.GRAY).getVisualOrderText());
                     context.renderTooltip(this.font, list, mouseX, mouseY);
                 } else {
                     List<FormattedCharSequence> list = new ArrayList<>();
                     list.add(Component.translatable("menu.singleplayer").withStyle(ChatFormatting.GRAY).getVisualOrderText());
-                    list.add(Component.literal(ModConfig.SERVERNAME.get()).getVisualOrderText());
+                    list.add(Component.literal(ModConfigClient.SERVERNAME.get()).getVisualOrderText());
                     context.renderTooltip(this.font, list, mouseX, mouseY);
                 }
             } else {
