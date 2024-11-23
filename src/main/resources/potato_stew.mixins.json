@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "potato_stew.refmap.json",
   "mixins": [
+    "coloredfishingline.FishingBobberEntityRendererMixin",
     "helpfulhitboxes.ChainBlockMixin",
     "helpfulhitboxes.CrossCollisionBlockMixin"
   ],
